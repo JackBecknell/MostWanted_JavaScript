@@ -137,11 +137,11 @@ function searchByTrait(people) {
             var filteredTrait = filterByTrait(people, "dob", dob);  
             break;             
         case "height":
-            let height =  promptFor("What is their height?: ", validator, "height")
+            let height =  parseInt(promptFor("What is their height?: ", validator, "height"))
             var filteredTrait = filterByTrait(people, "height", height);
             break;
         case "weight":
-            let weight =  promptFor("What is their weight?: ", validator, "weight")
+            let weight =  parseInt(promptFor("What is their weight?: ", validator, "weight"))
             var filteredTrait = filterByTrait(people, "weight", weight);
             break;
         case "eyecolor":
