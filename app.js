@@ -122,13 +122,28 @@ function searchByName(people) {
  */
 function searchByTrait(people) {
     let trait = promptFor("What is the type of trait you want to search by?\nTraits:\nGender, DOB, Height, Weight, Eyecolor, Occuption, Parents, Current Spouse : ", chars).toLocaleLowerCase()
-    /*switch (trait) {
-        case 
+    switch (trait) {
+        case "gender":
+            let gender = promptFor("What is their gender?: ", chars)
+        case "dob":
+            let dob = promptFor("What is their date of birth?: [M/DD/YYYY]", chars)
+        case "height":
+            let height =  promptFor("What is their height?: ", chars)
+        case "weight":
+            let weight =  promptFor("What is their weight?: ", chars)
+        case "eyecolor":
+            let eyecolor =  promptFor("What is their eye color?: ", chars)
+        case "occuption":
+            let occupation =  promptFor("What is their occupation?: ", chars)
+        case "parents":
+            let parents =  promptFor("who are their parents: ", chars)
+        case "spouse":
+            let spouse = promptFor("Who is their spouse?: ", chars)
     }
     
     let foundPersons = people.filter(function (person) {
             if (per)
-    })*/
+    })
 
 
 }
