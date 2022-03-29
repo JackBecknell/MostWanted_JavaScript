@@ -125,6 +125,7 @@ function searchByTrait(people) {
     switch (trait) {
         case "gender":
             let gender = promptFor("What is their gender?: ", chars)
+            let personsOfSameGender = searchByGender(people, gender);
         case "dob":
             let dob = promptFor("What is their date of birth?: [M/DD/YYYY]", chars)
         case "height":
@@ -140,13 +141,22 @@ function searchByTrait(people) {
         case "spouse":
             let spouse = promptFor("Who is their spouse?: ", chars)
     }
-    
-    let foundPersons = people.filter(function (person) {
-            if (per)
-    })
-
-
 }
+
+function searchByGender(people, gender) {
+    let result = people.filter(
+        function (person) {
+            if (person.gender === gender) {
+                return true;
+            }
+        }
+    )
+    return result;
+   
+}
+
+
+
 /**
  * This function will be useful for STRINGIFYING a collection of person-objects
  * first and last name properties in order to easily send the information
