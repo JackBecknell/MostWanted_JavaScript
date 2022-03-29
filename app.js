@@ -60,6 +60,7 @@ function mainMenu(person, people) {
     let displayOption = prompt(
         `Found ${person[0].firstName} ${person[0].lastName}. Do you want to know their 'info', 'family', or 'descendants'?\nType the option you want or type 'restart' or 'quit'.`
     );
+
     // Routes our application based on the user's input
     switch (displayOption) {
         case "info":
@@ -98,7 +99,7 @@ function mainMenu(person, people) {
  * This function is used when searching the people collection by
  * a person-object's firstName and lastName properties.
  * @param {Array} people        A collection of person objects.
- * @returns {Array}             An array containing the person-object (or empty array if no match)
+ * @returns {Array}            An array containing the person-object (or empty array if no match)
  */
 function searchByName(people) {
     let firstName = promptFor("What is the person's first name?", chars);
@@ -114,6 +115,23 @@ function searchByName(people) {
 }
 // End of searchByName()
 
+/**This function is used when searching the people collection by a 
+ * person-object's trait properties.
+ * @param {Array} people        A collection of person objects.
+ * @return {Array}              An array containing the person-objects (or empty array if no match)
+ */
+function searchByTrait(people) {
+    let trait = promptFor("What is the type of trait you want to search by?\nTraits:\nGender, DOB, Height, Weight, Eyecolor, Occuption, Parents, Current Spouse : ", chars).toLocaleLowerCase()
+    /*switch (trait) {
+        case 
+    }
+    
+    let foundPersons = people.filter(function (person) {
+            if (per)
+    })*/
+
+
+}
 /**
  * This function will be useful for STRINGIFYING a collection of person-objects
  * first and last name properties in order to easily send the information
