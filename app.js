@@ -125,7 +125,7 @@ function searchByTrait(people) {
     switch (trait) {
         case "gender":
             let gender = promptFor("What is their gender?: ", chars)
-            let personsOfSameGender = searchByGender(people, gender);
+            let personsOfSameGender = filterByTrait(people, gender);
         case "dob":
             let dob = promptFor("What is their date of birth?: [M/DD/YYYY]", chars)
         case "height":
@@ -143,7 +143,7 @@ function searchByTrait(people) {
     }
 }
 
-function searchByGender(people, gender) {
+function filterByTrait(people, gender) {
     let result = people.filter(
         function (person) {
             if (person.gender === gender) {
