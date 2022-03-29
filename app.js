@@ -102,8 +102,8 @@ function mainMenu(person, people) {
  * @returns {Array}            An array containing the person-object (or empty array if no match)
  */
 function searchByName(people) {
-    let firstName = promptFor("What is the person's first name?", chars);
-    let lastName = promptFor("What is the person's last name?", chars);
+    let firstName = promptFor("What is the person's first name?", validator);
+    let lastName = promptFor("What is the person's last name?", validator);
 
     // The foundPerson value will be of type Array. Recall that .filter() ALWAYS returns an array.
     let foundPerson = people.filter(function (person) {
@@ -124,29 +124,36 @@ function searchByTrait(people) {
     let trait = promptFor("What is the type of trait you want to search by?\nTraits:\nGender, DOB, Height, Weight, Eyecolor, Occuption, Parents, Current Spouse : ", chars).toLocaleLowerCase()
     switch (trait) {
         case "gender":
-            let gender = promptFor("What is their gender?: ", chars)
-            let personsOfSameGender = filterByTrait(people, gender);
+            let gender = promptFor("What is their gender?: ", "gender", validator)
+            let personsOfSameGender = filterByTrait(people, "gender", gender);
         case "dob":
-            let dob = promptFor("What is their date of birth?: [M/DD/YYYY]", chars)
+            let dob = promptFor("What is their date of birth?: [M/DD/YYYY]", "dob", validator)
+            let personsOfSameDob = filterByTrait(people, "dob", dob);               
         case "height":
-            let height =  promptFor("What is their height?: ", chars)
+            let height =  promptFor("What is their height?: ", "height", validator)
+            let personsOfSameHeight = filterByTrait(people, "height", height);
         case "weight":
-            let weight =  promptFor("What is their weight?: ", chars)
+            let weight =  promptFor("What is their weight?: ", "weight", validator)
+            let personsOfSameWeight = filterByTrait(people, "weight", weight);
         case "eyecolor":
-            let eyecolor =  promptFor("What is their eye color?: ", chars)
+            let eyecolor =  promptFor("What is their eye color?: ", "eyeColor", validator)
+            let personsOfSameEyeColor = filterByTrait(people, "eyeColor", eyecolor);
         case "occuption":
-            let occupation =  promptFor("What is their occupation?: ", chars)
+            let occupation =  promptFor("What is their occupation?: ", "occuption", validator)
+            let personsOfSameOccuption = filterByTrait(people, "occupation", occupation);
         case "parents":
-            let parents =  promptFor("who are their parents: ", chars)
+            let parents =  promptFor("who are their parents: ", "parents", validator)
+            let personByParents = filterByTrait(people, "parents", parents);
         case "spouse":
-            let spouse = promptFor("Who is their spouse?: ", chars)
+            let spouse = promptFor("Who is their spouse?: ", "currentSpouse", validator)
+            let personBySpouse = filterByTrait(people, "currentSpouse", spouse);
     }
 }
 
-function filterByTrait(people, gender) {
+function filterByTrait(people, trait, input) {
     let result = people.filter(
         function (person) {
-            if (person.gender === gender) {
+            if (person.trait === input) {
                 return true;
             }
         }
@@ -195,10 +202,10 @@ function displayPerson(person) {
  * @param {Function} valid      A callback function used to validate basic user input.
  * @returns {String}            The valid string input retrieved from the user.
  */
-function promptFor(question, valid) {
+function promptFor(question, specificTrait, valid) {
     do {
         var response = prompt(question).trim();
-    } while (!response || !valid(response));
+    } while (!response || !valid(response, specificTrait));
     return response;
 }
 // End of promptFor()
@@ -219,7 +226,7 @@ function yesNo(input) {
  * @param {String} input        A string.
  * @returns {Boolean}           Default validation -- no logic yet.
  */
-function chars(input) {
+function validator(input, specificTrait) {
     return true; // Default validation only
 }
 // End of chars()
