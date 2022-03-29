@@ -31,14 +31,19 @@ function app(people) {
         case "no":
             //! TODO: Declare a searchByTrait function //////////////////////////////////////////
             searchResults = searchByTrait(people);
+            while(searchResults.length > 1){
+               searchResults = searchByTrait(searchResults);
+            }
             break;
         default:
             // Re-initializes the app() if neither case was hit above. This is an instance of recursion.
             app(people);
             break;
     }
+
     // Calls the mainMenu() only AFTER we find the SINGLE PERSON
     mainMenu(searchResults, people);
+
 }
 // End of app()
 
@@ -125,30 +130,38 @@ function searchByTrait(people) {
     switch (trait) {
         case "gender":
             let gender = promptFor("What is their gender?: ", validator, "gender")
-            let personsOfSameGender = filterByTrait(people, "gender", gender);
+            var filteredTrait = filterByTrait(people, "gender", gender);
+            break;
         case "dob":
             let dob = promptFor("What is their date of birth?: [M/DD/YYYY]", validator, "dob")
-            let personsOfSameDob = filterByTrait(people, "dob", dob);               
+            var filteredTrait = filterByTrait(people, "dob", dob);  
+            break;             
         case "height":
             let height =  promptFor("What is their height?: ", validator, "height")
-            let personsOfSameHeight = filterByTrait(people, "height", height);
+            var filteredTrait = filterByTrait(people, "height", height);
+            break;
         case "weight":
             let weight =  promptFor("What is their weight?: ", validator, "weight")
-            let personsOfSameWeight = filterByTrait(people, "weight", weight);
+            var filteredTrait = filterByTrait(people, "weight", weight);
+            break;
         case "eyecolor":
             let eyecolor =  promptFor("What is their eye color?: ", validator, "eyeColor")
-            let personsOfSameEyeColor = filterByTrait(people, "eyeColor", eyecolor);
+            var filteredTrait = filterByTrait(people, "eyeColor", eyecolor);
+            break;
         case "occuption":
             let occupation =  promptFor("What is their occupation?: ", validator, "occuption")
-            let personsOfSameOccuption = filterByTrait(people, "occupation", occupation);
+            var filteredTrait = filterByTrait(people, "occupation", occupation);
+            break;
         case "parents":
             let parents =  promptFor("who are their parents: ", validator, "parents")
-            let personByParents = filterByTrait(people, "parents", parents);
+            var filteredTrait = filterByTrait(people, "parents", parents);
+            break;
         case "spouse":
             let spouse = promptFor("Who is their spouse?: ", validator, "currentSpouse")
-            let personBySpouse = filterByTrait(people, "currentSpouse", spouse);
+            var filteredTrait = filterByTrait(people, "currentSpouse", spouse);
             break;
     }
+    return filteredTrait;
 }
 
 function filterByTrait(people, trait, input) {
@@ -156,12 +169,13 @@ function filterByTrait(people, trait, input) {
         function (person) {
             if (person[trait] === input) {
                 return true;
-            }
+            };
         }
-    )
+    );
     return result;
    
-}
+};
+
 
 
 
