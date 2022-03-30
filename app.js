@@ -31,8 +31,10 @@ function app(people) {
         case "no":
             //! TODO: Declare a searchByTrait function //////////////////////////////////////////
             searchResults = searchByTrait(people);
-            while(searchResults.length > 1){
-               searchResults = searchByTrait(searchResults);
+            let userInput = promptFor("Do you want to pick another trait? [Yes/No]: ", validator)
+            while(userInput === "yes"){
+                searchResults = searchByTrait(searchResults);
+                userInput = promptFor("Do you want to pick another trait? [Yes/No]: ", validator)
             }
             break;
         default:
@@ -125,6 +127,9 @@ function searchByName(people) {
  * @param {Array} people        A collection of person objects.
  * @return {Array}              An array containing the person-objects (or empty array if no match)
  */
+
+
+
 function searchByTrait(people) {
     let trait = promptFor("What is the type of trait you want to search by?\nTraits:\nGender, DOB, Height, Weight, Eyecolor, Occuption, Parents, Current Spouse : ", validator).toLocaleLowerCase()
     switch (trait) {
@@ -161,7 +166,7 @@ function searchByTrait(people) {
             var filteredTrait = filterByTrait(people, "currentSpouse", spouse);
             break;
     }
-    return filteredTrait;
+    return filteredTrait;   
 }
 
 function filterByTrait(people, trait, input) {
