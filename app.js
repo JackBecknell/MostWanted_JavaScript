@@ -65,16 +65,14 @@ function mainMenu(person, people) {
         // Restarts app() from the very beginning
         return app(people);
     }else if(person.length === 1){
-        let displayOption = prompt(
+        displayOption = prompt(
             `Found ${person[0].firstName} ${person[0].lastName}. Do you want to know their 'info', 'family', or 'descendants'?\nType the option you want or type 'restart' or 'quit'.`
         );
     }else{
         let displayNamesArray = []
         alert('The following people matched your trait specifications.')
         displayNamesArray = person.map (obj => `${obj.firstName} ${obj.lastName}.\n`)
-        //for (let i = 0; i < person.length; i++) {
-        //   displayNamesArray.push(`Person ${i+1}.First Name ${person[i].firstName}, Last Name ${person[i].lastName}.\n`);
-        //}
+
         displayOption = prompt(`${displayNamesArray}\nWould you like to 'restart' or 'quit'.`)
     }
     
@@ -82,8 +80,9 @@ function mainMenu(person, people) {
     switch (displayOption) {
         case "info":
             //! TODO: Declare a findPersonInfo function //////////////////////////////////////////
+
             // HINT: Look for a person-object stringifier utility function to help
-            let personInfo = findPersonInfo(person[0]);
+            let personInfo = findPersonInfo(person);
             alert(personInfo);
             break;
         case "family":
@@ -112,6 +111,10 @@ function mainMenu(person, people) {
 }
 // End of mainMenu()
 
+function findPersonInfo(person){
+    let result = person.map(obj => `First Name: ${obj.firstName}\nLast Name: ${obj.lastName}\nGender: ${obj.gender}\nDOB: ${obj.dob}\nHeight: ${obj.height}\nWeight: ${obj.weight}\nEye Color: ${obj.eyeColor}\nOccupation: ${obj.occupation}`)
+    return result
+};
 /**
  * This function is used when searching the people collection by
  * a person-object's firstName and lastName properties.
