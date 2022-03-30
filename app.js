@@ -59,15 +59,25 @@ function app(people) {
  */
 function mainMenu(person, people) {
     // A check to verify a person was found via searchByName() or searchByTrait()
+    let displayOption;
     if (!person[0]) {
         alert("Could not find that individual.");
         // Restarts app() from the very beginning
         return app(people);
+    }else if(person.length === 1){
+        let displayOption = prompt(
+            `Found ${person[0].firstName} ${person[0].lastName}. Do you want to know their 'info', 'family', or 'descendants'?\nType the option you want or type 'restart' or 'quit'.`
+        );
+    }else{
+        let displayNamesArray = []
+        alert('The following people matched your trait specifications.')
+        displayNamesArray = person.map (obj => `${obj.firstName} ${obj.lastName}.\n`)
+        //for (let i = 0; i < person.length; i++) {
+        //   displayNamesArray.push(`Person ${i+1}.First Name ${person[i].firstName}, Last Name ${person[i].lastName}.\n`);
+        //}
+        displayOption = prompt(`${displayNamesArray}\nWould you like to 'restart' or 'quit'.`)
     }
-    let displayOption = prompt(
-        `Found ${person[0].firstName} ${person[0].lastName}. Do you want to know their 'info', 'family', or 'descendants'?\nType the option you want or type 'restart' or 'quit'.`
-    );
-
+    
     // Routes our application based on the user's input
     switch (displayOption) {
         case "info":
