@@ -87,8 +87,49 @@ function mainMenu(person, people) {
             break;
         case "family":
             //! TODO: Declare a findPersonFamily function //////////////////////////////////////////
+            function findPersonFamily(person, people){
+                let findParents;
+                let findSpouse;
+                let findSiblings;
+                let ParentKeys = person.filter(function (obj) {
+                    if(obj.parents)
+                })
+                if (ParentKeys){
+                    findParents = people.filter(
+                        function(obj){
+                            if(obj.id === ParentKeys)
+                            return true;
+                        }
+                    ).map(spo => `${spo.firstName} ${spo.lastName}`)
+                }else{
+                    return "No parents in system"
+                }
+                
+                let spouseKey = person.filter(obj.spouse)
+                if (spouseKey){
+                    findSpouse = people.filter(
+                        function(obj){
+                            if(obj.id === spouseKey)
+                            return true;
+                        }
+                    ).map(spo => `${spo.firstName} ${spo.lastName}`)
+                }else{
+                    return "No spouse in system"
+                }
+
+                if (ParentKeys){
+                    findSiblings = people.filter(
+                        function(obj){
+                            if(obj.parents === person.ParentKeys)
+                            return true;
+                        }
+                    ).map(spo => `${spo.firstName} ${spo.lastName}`)
+                }else{
+                    return "No parents in system"
+                }
+            };
             // HINT: Look for a people-collection stringifier utility function to help
-            let personFamily = findPersonFamily(person[0], people);
+            let personFamily = findPersonFamily(person, people);
             alert(personFamily);
             break;
         case "descendants":
