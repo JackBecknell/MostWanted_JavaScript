@@ -202,7 +202,7 @@ function yesNo(input) {
 function validator(input, trait) {
     return true; // Default validation only
 }
-// End of chars()
+// End of validator()
 
 //////////////////////////////////////////* End Of Starter Code *//////////////////////////////////////////
 // Any additional functions can be written below this line 👇. Happy Coding! 😁
@@ -260,15 +260,16 @@ function findPersonFamily(person, people){
     return `${person[0].firstName} ${person[0].lastName} Family:\n\nParent:\n${personParents}\n\nSpouse:\n${personSpouse}\n\nSiblings:\n${personSiblings}`
 }
 
-
+//changed this function!!!
 function findPersonNameFromPk(person, people, trait){
     if(trait === "currentSpouse" && person[0][trait] === null){
         return `No spouse in system.`
     };
-    let personNames = people.filter(element => ((element.id == person[0][trait][0]) || (element.id == person[0][trait][1]))
+    //changed this line V - removed 0 index that came after trait.
+    let personNames = people.filter(element => ((element.id == person[0][trait]) || (element.id == person[0][trait]))
     ).map(element => `${element.firstName} ${element.lastName}`);
 
-    if(personNames === undefined || personNames === null){
+    if(personNames.length === 0){
         return `No ${trait} in system.`
     }else{
         return personNames;
@@ -279,7 +280,7 @@ function findPersonNameFromPk(person, people, trait){
 function findAllSiblings(person, people){
     let siblings = people.filter(obj => (obj.parents.includes(person[0].parents[0]) && obj.firstName !== person[0].firstName)  
     ).map(siblingsObj => `${siblingsObj.firstName} ${siblingsObj.lastName}`);
-    if(siblings == undefined){
+    if(siblings.length === 0){
         return `No Sibling in system.`;
     }else{
         return siblings;
@@ -296,7 +297,13 @@ function capitalizeFirstLetter(name) {
     return name.charAt(0).toUpperCase() + name.slice(1);
   }
 
-
+/**
+ * This function uses a recursive style function to use a person PK to search through all
+ * other peoples parents FK's. When there is a hit, the function stores the name of the person
+ * in an array to be returned and then runs again with that descendant to check for more descendants.
+ * @param {object} person       A singular person.
+ * @param {Array}  people       All people from data.js
+ */
 function findDescendants(person, people){
     let returnValue = []
     let descendantObj;
@@ -312,3 +319,4 @@ function findDescendants(person, people){
     }
     return returnValue;
 }
+//End of findDescendants()
