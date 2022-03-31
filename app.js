@@ -110,68 +110,7 @@ function mainMenu(person, people) {
 }
 // End of mainMenu()
 
-function findPersonFamily(person, people){
-    let personParents = findPersonNameFromPk(person, people, 'parents')
-    let personSpouse = findPersonNameFromPk(person, people, 'currentSpouse')
-    let personSiblings = findAllSiblings(person, people)
-    return `${person[0].firstName} ${person[0].lastName} Family:\n\nParent:\n${personParents}\n\nSpouse:\n${personSpouse}\n\nSiblings:\n${personSiblings}`
-}
 
-function findPersonNameFromPk(person, people, trait){
-    if(trait === "currentSpouse" && person[0][trait] === null){
-        return `No spouse in system.`
-    };
-    let personNames = people.filter(element => ((element.id == person[0][trait][0]) || (element.id == person[0][trait][1]))
-    ).map(element => `${element.firstName} ${element.lastName}`);
-
-    if(personNames === undefined || personNames === null){
-        return `No ${trait} in system.`
-    }else{
-        return personNames;
-    };
-};
-
-function findAllSiblings(person, people){
-    let siblings = people.filter(obj => (obj.parents.includes(person[0].parents[0]) && obj.firstName !== person[0].firstName)  
-    ).map(siblingsObj => `${siblingsObj.firstName} ${siblingsObj.lastName}`);
-    if(siblings == undefined){
-        return `No Sibling in system.`;
-    }else{
-        return siblings;
-    };
-};
-
-function findDescendants(person,people){
-    let descendants = people.filter
-    if(person.parents === people.parents){
-
-
-    }
-}
-
-
-  
-
-
-
-
-
-      /*  console.log(personParents)
-    }else if (personParentsPk.length === 2){
-        let personParents = people.filter(function(element){
-            if(element.id == personParentsPk[0]){
-                return true;
-            }
-    }*/
-
-
-
-
-
-function findPersonInfo(person){
-    let result = person.map(obj => `First Name: ${obj.firstName}\nLast Name: ${obj.lastName}\nGender: ${obj.gender}\nDOB: ${obj.dob}\nHeight: ${obj.height}\nWeight: ${obj.weight}\nEye Color: ${obj.eyeColor}\nOccupation: ${obj.occupation}`)
-    return result
-};
 /**
  * This function is used when searching the people collection by
  * a person-object's firstName and lastName properties.
@@ -197,62 +136,6 @@ function searchByName(people) {
  * @param {Array} people        A collection of person objects.
  * @return {Array}              An array containing the person-objects (or empty array if no match)
  */
-
-
-
-function searchByTrait(people) {
-    let trait = promptFor("What is the type of trait you want to search by?\nTraits:\nGender, DOB, Height, Weight, Eyecolor, Occuption, Parents, Current Spouse : ", validator).toLocaleLowerCase()
-    switch (trait) {
-        case "gender":
-            let gender = promptFor("What is their gender?: ", validator, "gender")
-            var filteredTrait = filterByTrait(people, "gender", gender);
-            break;
-        case "dob":
-            let dob = promptFor("What is their date of birth?: [M/DD/YYYY]", validator, "dob")
-            var filteredTrait = filterByTrait(people, "dob", dob);  
-            break;             
-        case "height":
-            let height =  parseInt(promptFor("What is their height?: ", validator, "height"))
-            var filteredTrait = filterByTrait(people, "height", height);
-            break;
-        case "weight":
-            let weight =  parseInt(promptFor("What is their weight?: ", validator, "weight"))
-            var filteredTrait = filterByTrait(people, "weight", weight);
-            break;
-        case "eyecolor":
-            let eyecolor =  promptFor("What is their eye color?: ", validator, "eyeColor")
-            var filteredTrait = filterByTrait(people, "eyeColor", eyecolor);
-            break;
-        case "occuption":
-            let occupation =  promptFor("What is their occupation?: ", validator, "occuption")
-            var filteredTrait = filterByTrait(people, "occupation", occupation);
-            break;
-        case "parents":
-            let parents =  promptFor("who are their parents: ", validator, "parents")
-            var filteredTrait = filterByTrait(people, "parents", parents);
-            break;
-        case "spouse":
-            let spouse = promptFor("Who is their spouse?: ", validator, "currentSpouse")
-            var filteredTrait = filterByTrait(people, "currentSpouse", spouse);
-            break;
-    }
-    return filteredTrait;   
-}
-
-function filterByTrait(people, trait, input) {
-    let result = people.filter(
-        function (person) {
-            if (person[trait] === input) {
-                return true;
-            };
-        }
-    );
-    return result;
-   
-};
-
-
-
 
 /**
  * This function will be useful for STRINGIFYING a collection of person-objects
@@ -324,119 +207,105 @@ function validator(input, trait) {
 //////////////////////////////////////////* End Of Starter Code *//////////////////////////////////////////
 // Any additional functions can be written below this line 👇. Happy Coding! 😁
 
-/*function findPersonParents(person, people){
-    let personParentsPk = person.map(element=>element.parents);
-    let personParents = [];
-    if (personParentsPk[0].length === 1){
-        people.filter(function(element){
-            if(element.id == personParentsPk[0]){
-                personParents.push(`${element.firstName} ${element.lastName}`);
-            }
-        })
-    }else{
-        for (let i = 0; i < personParentsPk[0].length; i++){
-            people.filter(function(element){
-                if(element.id == personParentsPk[0][0+i]){
-                    personParents.push(`${element.firstName} ${element.lastName}`);
-                }
-            })
-        }  
+function searchByTrait(people) {
+    let trait = promptFor("What is the type of trait you want to search by?\nTraits:\nGender, DOB, Height, Weight, Eyecolor, Occuption, Parents, Current Spouse : ", validator).toLocaleLowerCase()
+    switch (trait) {
+        case "gender":
+            let gender = promptFor("What is their gender?: ", validator, "gender")
+            var filteredTrait = filterByTrait(people, "gender", gender);
+            break;
+        case "dob":
+            let dob = promptFor("What is their date of birth?: [M/DD/YYYY]", validator, "dob")
+            var filteredTrait = filterByTrait(people, "dob", dob);  
+            break;             
+        case "height":
+            let height =  parseInt(promptFor("What is their height?: ", validator, "height"))
+            var filteredTrait = filterByTrait(people, "height", height);
+            break;
+        case "weight":
+            let weight =  parseInt(promptFor("What is their weight?: ", validator, "weight"))
+            var filteredTrait = filterByTrait(people, "weight", weight);
+            break;
+        case "eyecolor":
+            let eyecolor =  promptFor("What is their eye color?: ", validator, "eyeColor")
+            var filteredTrait = filterByTrait(people, "eyeColor", eyecolor);
+            break;
+        case "occuption":
+            let occupation =  promptFor("What is their occupation?: ", validator, "occuption")
+            var filteredTrait = filterByTrait(people, "occupation", occupation);
+            break;
+        case "parents":
+            let parents =  promptFor("who are their parents: ", validator, "parents")
+            var filteredTrait = filterByTrait(people, "parents", parents);
+            break;
+        case "spouse":
+            let spouse = promptFor("Who is their spouse?: ", validator, "currentSpouse")
+            var filteredTrait = filterByTrait(people, "currentSpouse", spouse);
+            break;
     }
-    console.log(personParents)
-    return personParents */
-
-
-/*function mainMenu(person, people) {
-    // A check to verify a person was found via searchByName() or searchByTrait()
-    let displayOption;
-    if (!person[0]) {
-        alert("Could not find that individual.");
-        // Restarts app() from the very beginning
-        return app(people);
-    }else if(person.length === 1){
-        displayOption = prompt(
-            `Found ${person[0].firstName} ${person[0].lastName}. Do you want to know their 'info', 'family', or 'descendants'?\nType the option you want or type 'restart' or 'quit'.`
-        );
-    }else{
-        let displayNamesArray = []
-        alert('The following people matched your trait specifications.')
-        displayNamesArray = person.map (obj => `${obj.firstName} ${obj.lastName}.\n`)
-
-        displayOption = prompt(`${displayNamesArray}\nWould you like to 'restart' or 'quit'.`)
-    }
-    
-    // Routes our application based on the user's input
-    switch (displayOption) {
-        case "info":
-            //! TODO: Declare a findPersonInfo function //////////////////////////////////////////
-
-            // HINT: Look for a person-object stringifier utility function to help
-            let personInfo = findPersonInfo(person);
-            alert(personInfo);
-            break;
-        case "family":
-            //! TODO: Declare a findPersonFamily function //////////////////////////////////////////
-            function findPersonFamily(person, people){
-                let findParents;
-                let findSpouse;
-                let findSiblings;
-                let ParentKeys = person.filter(function (obj) {
-                    if(obj.parents)
-                })
-                if (ParentKeys){
-                    findParents = people.filter(
-                        function(obj){
-                            if(obj.id === ParentKeys)
-                            return true;
-                        }
-                    ).map(spo => `${spo.firstName} ${spo.lastName}`)
-                }else{
-                    return "No parents in system"
-                }
-                
-                let spouseKey = person.filter(obj.spouse)
-                if (spouseKey){
-                    findSpouse = people.filter(
-                        function(obj){
-                            if(obj.id === spouseKey)
-                            return true;
-                        }
-                    ).map(spo => `${spo.firstName} ${spo.lastName}`)
-                }else{
-                    return "No spouse in system"
-                }
-
-                if (ParentKeys){
-                    findSiblings = people.filter(
-                        function(obj){
-                            if(obj.parents === person.ParentKeys)
-                            return true;
-                        }
-                    ).map(spo => `${spo.firstName} ${spo.lastName}`)
-                }else{
-                    return "No parents in system"
-                }
-            };
-            // HINT: Look for a people-collection stringifier utility function to help
-            let personFamily = findPersonFamily(person, people);
-            alert(personFamily);
-            break;
-        case "descendants":
-            //! TODO: Declare a findPersonDescendants function //////////////////////////////////////////
-            // HINT: Review recursion lecture + demo for bonus user story
-            let personDescendants = findPersonDescendants(person[0], people);
-            alert(personDescendants);
-            break;
-        case "restart":
-            // Restart app() from the very beginning
-            app(people);
-            break;
-        case "quit":
-            // Stop application execution
-            return;
-        default:
-            // Prompt user again. Another instance of recursion
-            return mainMenu(person, people);
-    }
+    return filteredTrait;   
 }
-// End of mainMenu()*/
+
+
+function filterByTrait(people, trait, input) {
+    let result = people.filter((person) => (person[trait] === input));
+    return result
+};
+
+
+function findPersonFamily(person, people){
+    let personParents = findPersonNameFromPk(person, people, 'parents')
+    let personSpouse = findPersonNameFromPk(person, people, 'currentSpouse')
+    let personSiblings = findAllSiblings(person, people)
+    return `${person[0].firstName} ${person[0].lastName} Family:\n\nParent:\n${personParents}\n\nSpouse:\n${personSpouse}\n\nSiblings:\n${personSiblings}`
+}
+
+
+function findPersonNameFromPk(person, people, trait){
+    if(trait === "currentSpouse" && person[0][trait] === null){
+        return `No spouse in system.`
+    };
+    let personNames = people.filter(element => ((element.id == person[0][trait][0]) || (element.id == person[0][trait][1]))
+    ).map(element => `${element.firstName} ${element.lastName}`);
+
+    if(personNames === undefined || personNames === null){
+        return `No ${trait} in system.`
+    }else{
+        return personNames;
+    };
+};
+
+
+function findAllSiblings(person, people){
+    let siblings = people.filter(obj => (obj.parents.includes(person[0].parents[0]) && obj.firstName !== person[0].firstName)  
+    ).map(siblingsObj => `${siblingsObj.firstName} ${siblingsObj.lastName}`);
+    if(siblings == undefined){
+        return `No Sibling in system.`;
+    }else{
+        return siblings;
+    };
+};
+
+
+function findPersonDescendants(person, people, array = []){
+    let descendantArray = person.parents;
+    array = [person]
+    //let descendants = people.filter(everyone => (everyone.parents.includes(person.parents))
+    
+    if(descendantArray.length === 0){
+        return array;
+    }
+    for(let i = 0; i < descendantArray.length; i++){
+        array = array.concat(
+            findPersonDescendants(descendantArray[i])
+        )
+    }
+    return array;
+}
+
+
+
+function findPersonInfo(person){
+    let result = person.map(obj => `First Name: ${obj.firstName}\nLast Name: ${obj.lastName}\nGender: ${obj.gender}\nDOB: ${obj.dob}\nHeight: ${obj.height}\nWeight: ${obj.weight}\nEye Color: ${obj.eyeColor}\nOccupation: ${obj.occupation}`)
+    return result
+};
