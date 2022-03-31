@@ -113,11 +113,14 @@ function mainMenu(person, people) {
 function findPersonFamily(person, people){
     let personParents = findPersonNameFromPk(person, 'parents', people)
     let personSpouse = findPersonNameFromPk(person, 'currentSpouse', people)
-    let personSiblings = findPersonNameFromPk(person, people)
+    let personSiblings = findAllSiblings(person, people)
 }
 
 function findPersonNameFromPk(person, trait, people){
     let personPk = person.map(element=>element[trait]);
+    if (personPk[0] === null){
+        return undefined;
+    };
     let personNames = []
     if (personPk[0].length === 1){
         people.filter(function(element){
@@ -134,7 +137,18 @@ function findPersonNameFromPk(person, trait, people){
             })
         }  
     }
-    return personNames
+    return personNames;
+};
+
+function findAllSiblings(person, people){
+ 
+    let siblings = people.filter(
+        function(obj){
+            if(person[0].parents === obj.parents){
+                return true
+            }
+        }
+    ).map(siblingsObj => `${siblingsObj.firstName} ${siblingsObj.lastName}`);
 }
 
 
