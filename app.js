@@ -31,10 +31,13 @@ function app(people) {
         case "no":
             //! TODO: Declare a searchByTrait function //////////////////////////////////////////
             searchResults = searchByTrait(people);
-            let userInput = promptFor("Do you want to pick another trait? [Yes/No]: ", validator)
+            let data = searchResults 
+            let userInput = promptFor(`Found ${foundUsers}\n\n\nDo you want to pick another trait? [Yes/No]: `, yesNo)
+            foundUsers = searchResults.map(person => `${person.firstName} ${person.lastName}`)
             while(userInput === "yes"){
+                foundUsers = searchResults.map(person => `${person.firstName} ${person.lastName}`)
                 searchResults = searchByTrait(searchResults);
-                userInput = promptFor("Do you want to pick another trait? [Yes/No]: ", validator)
+                userInput = promptFor(`Found ${foundUsers}\n\n\nDo you want to pick another trait? [Yes/No]: `, yesNo)
             }
             break;
         default:
@@ -58,6 +61,7 @@ function app(people) {
  * @returns {String}            The valid string input retrieved from the user.
  */
 function mainMenu(person, people) {
+    let mainMenuCheckList = ['info', 'family', 'descendants', 'restart', 'quit']
     // A check to verify a person was found via searchByName() or searchByTrait()
     let displayOption;
     if (!person[0]) {
@@ -65,15 +69,16 @@ function mainMenu(person, people) {
         // Restarts app() from the very beginning
         return app(people);
     }else if(person.length === 1){
-        displayOption = prompt(
-            `Found ${person[0].firstName} ${person[0].lastName}. Do you want to know their 'info', 'family', or 'descendants'?\nType the option you want or type 'restart' or 'quit'.`
+        displayOption = promptFor(
+            `Found ${person[0].firstName} ${person[0].lastName}. Do you want to know their 'info', 'family', or 'descendants'?\nType the option you want or type 'restart' or 'quit'.`, validator, mainMenuCheckList
         );
     }else{
+        let displayOptionCheckList = ["restart", "quit"]
         let displayNamesArray = []
         alert('The following people matched your trait specifications.')
         displayNamesArray = person.map (obj => `${obj.firstName} ${obj.lastName}.\n`)
 
-        displayOption = prompt(`${displayNamesArray}\nWould you like to 'restart' or 'quit'.`)
+        displayOption = promptFor(`${displayNamesArray}\nWould you like to 'restart' or 'quit'.`, validator, displayOptionCheckList)
     }
     
     // Routes our application based on the user's input
@@ -175,10 +180,10 @@ function displayPerson(person) {
  * @param {Function} valid      A callback function used to validate basic user input.
  * @returns {String}            The valid string input retrieved from the user.
  */
-function promptFor(question, valid, trait) {
+function promptFor(question, valid, checkList) {
     do {
         var response = prompt(question).trim();
-    } while (!response || !valid(response, trait) == true);
+    } while (!response || !valid(response, checkList) == true);
     return response;
 }
 // End of promptFor()
@@ -194,13 +199,25 @@ function yesNo(input) {
 // End of yesNo()
 
 /**
- * This helper function operates as a default callback for promptFor's validation.
- * Feel free to modify this to suit your needs.
- * @param {String} input        A string.
- * @returns {Boolean}           Default validation -- no logic yet.
+ * This helper function checks to see if the value passed into input is
+ * ('info', 'family', 'descendants', 'restart', 'quit') if not user
+ * gets an alert telling them their input was not accepted.
+ * @param {*} input 
+ * @param {*} trait 
+ * @returns 
  */
-function validator(input, trait) {
-    return true; // Default validation only
+function validator(input, checkList) {
+    let userInput = input.toLowerCase()
+    if (checkList.includes(userInput)) {
+        return true
+    }else{
+        alert("Improper Input")
+        return false
+    }
+}
+
+function validateTraits(input) {
+    
 }
 // End of validator()
 
@@ -208,39 +225,41 @@ function validator(input, trait) {
 // Any additional functions can be written below this line 👇. Happy Coding! 😁
 
 function searchByTrait(people) {
-    let trait = promptFor("What is the type of trait you want to search by?\nTraits:\nGender, DOB, Height, Weight, Eyecolor, Occuption, Parents, Current Spouse : ", validator).toLocaleLowerCase()
+    let traitCheckList = ["gender", "dob", "height", "weight", "eyecolor", "eye color", "occuption", "parent", "parents", "currentspouse", "current spouse"]
+    let trait = promptFor("What is the type of trait you want to search by?\nTraits:\nGender, DOB, Height, Weight, Eyecolor, Occuption, Parents, Current Spouse : ", validator, traitCheckList).toLocaleLowerCase()
+   let filteredTrait;
     switch (trait) {
         case "gender":
-            let gender = promptFor("What is their gender?: ", validator, "gender")
-            var filteredTrait = filterByTrait(people, "gender", gender);
+            let gender = prompt("What is their gender?: ")
+            filteredTrait = filterByTrait(people, "gender", gender);
             break;
         case "dob":
-            let dob = promptFor("What is their date of birth?: [M/DD/YYYY]", validator, "dob")
-            var filteredTrait = filterByTrait(people, "dob", dob);  
+            let dob = prompt("What is their date of birth?: [M/DD/YYYY]")
+            filteredTrait = filterByTrait(people, "dob", dob);  
             break;             
         case "height":
-            let height =  parseInt(promptFor("What is their height?: ", validator, "height"))
-            var filteredTrait = filterByTrait(people, "height", height);
+            let height =  parseInt(prompt("What is their height?: "))
+            filteredTrait = filterByTrait(people, "height", height);
             break;
         case "weight":
-            let weight =  parseInt(promptFor("What is their weight?: ", validator, "weight"))
-            var filteredTrait = filterByTrait(people, "weight", weight);
+            let weight =  parseInt(prompt("What is their weight?: "))
+            filteredTrait = filterByTrait(people, "weight", weight);
             break;
-        case "eyecolor":
-            let eyecolor =  promptFor("What is their eye color?: ", validator, "eyeColor")
-            var filteredTrait = filterByTrait(people, "eyeColor", eyecolor);
+        case "eyecolor" || "eye color":
+            let eyecolor =  prompt("What is their eye color?: ")
+            filteredTrait = filterByTrait(people, "eyeColor", eyecolor);
             break;
         case "occuption":
-            let occupation =  promptFor("What is their occupation?: ", validator, "occuption")
-            var filteredTrait = filterByTrait(people, "occupation", occupation);
+            let occupation =  prompt("What is their occupation?: ")
+            filteredTrait = filterByTrait(people, "occupation");
             break;
         case "parents":
-            let parents =  promptFor("who are their parents: ", validator, "parents")
-            var filteredTrait = filterByTrait(people, "parents", parents);
+            let parents =  prompt("who are their parents: ")
+            filteredTrait = filterByTrait(people, "parents");
             break;
-        case "spouse":
-            let spouse = promptFor("Who is their spouse?: ", validator, "currentSpouse")
-            var filteredTrait = filterByTrait(people, "currentSpouse", spouse);
+        case "spouse" || "current spouse":
+            let spouse = prompt("Who is their spouse?: ")
+            filteredTrait = filterByTrait(people, "currentSpouse");
             break;
     }
     return filteredTrait;   
