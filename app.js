@@ -111,47 +111,43 @@ function mainMenu(person, people) {
 // End of mainMenu()
 
 function findPersonFamily(person, people){
-    let personParents = findPersonNameFromPk(person, 'parents', people)
-    let personSpouse = findPersonNameFromPk(person, 'currentSpouse', people)
+    let personParents = findPersonNameFromPk(person, people, 'parents')
+    let personSpouse = findPersonNameFromPk(person, people, 'currentSpouse')
     let personSiblings = findAllSiblings(person, people)
+    return `${person[0].firstName} ${person[0].lastName} Family:\n\nParent:\n${personParents}\n\nSpouse:\n${personSpouse}\n\nSiblings:\n${personSiblings}`
 }
 
-function findPersonNameFromPk(person, trait, people){
-    let personPk = person.map(element=>element[trait]);
-    if (personPk[0] === null){
-        return undefined;
+function findPersonNameFromPk(person, people, trait){
+    if(trait === "currentSpouse" && person[0][trait] === null){
+        return `No spouse in system.`
     };
-    let personNames = []
-    if (personPk[0].length === 1){
-        people.filter(function(element){
-            if(element.id == personPk[0]){
-                personNames.push(`${element.firstName} ${element.lastName}`);
-            }
-        })
+    let personNames = people.filter(element => ((element.id == person[0][trait][0]) || (element.id == person[0][trait][1]))
+    ).map(element => `${element.firstName} ${element.lastName}`);
+
+    if(personNames === undefined || personNames === null){
+        return `No ${trait} in system.`
     }else{
-        for (let i = 0; i < personPk[0].length; i++){
-            people.filter(function(element){
-                if(element.id == personPk[0][0+i]){
-                    personNames.push(`${element.firstName} ${element.lastName}`);
-                }
-            })
-        }  
-    }
-    return personNames;
+        return personNames;
+    };
 };
 
 function findAllSiblings(person, people){
- 
-    let siblings = people.filter(
-        function(obj){
-            if(person[0].parents === obj.parents){
-                return true
-            }
-        }
+    let siblings = people.filter(obj => (obj.parents.includes(person[0].parents[0]) && obj.firstName !== person[0].firstName)  
     ).map(siblingsObj => `${siblingsObj.firstName} ${siblingsObj.lastName}`);
+    if(siblings == undefined){
+        return `No Sibling in system.`;
+    }else{
+        return siblings;
+    };
+};
+
+function findDescendants(person,people){
+    let descendants = people.filter
+    if(person.parents === people.parents){
+
+
+    }
 }
-
-
 
 
   
