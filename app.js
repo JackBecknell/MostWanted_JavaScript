@@ -93,9 +93,6 @@ function mainMenu(person, people) {
         case "descendants":
             //! TODO: Declare a findPersonDescendants function //////////////////////////////////////////
             // HINT: Review recursion lecture + demo for bonus user story
-
-            //USING TEST FUNCTION BELOW !!!
-
             let personDescendants = findDescendants(person[0], people);
             alert(personDescendants);
             break;
@@ -289,24 +286,6 @@ function findAllSiblings(person, people){
     };
 };
 
-
-function findPersonDescendants(person, people, array = []){
-    let parentArray = person.parents;
-    array = [person]
-    //let descendants = people.filter(everyone => (everyone.parents.includes(person.parents))
-    
-    if(descendantArray.length === 0){
-        return array;
-    }
-    for(let i = 0; i < descendantArray.length; i++){
-        array = array.concat(
-            findPersonDescendants(descendantArray[i])
-        )
-    }
-    return array;
-}
-
-
 function findPersonInfo(person){
     let result = person.map(obj => `First Name: ${obj.firstName}\nLast Name: ${obj.lastName}\nGender: ${obj.gender}\nDOB: ${obj.dob}\nHeight: ${obj.height}\nWeight: ${obj.weight}\nEye Color: ${obj.eyeColor}\nOccupation: ${obj.occupation}`)
     return result
@@ -317,7 +296,7 @@ function capitalizeFirstLetter(name) {
     return name.charAt(0).toUpperCase() + name.slice(1);
   }
 
-//TEST ZONE
+
 function findDescendants(person, people){
     let returnValue = []
     let descendantObj;
@@ -333,10 +312,3 @@ function findDescendants(person, people){
     }
     return returnValue;
 }
-
-  /*We take person obj
-  From obj we take pk
-  From pk we search through all other person objects to see if their parents trait include that as fk
-  If it does store that name in array
-  Then use their pk to search through all other objects to see if their parents include that as fk
-  If it does, push that name to previous array and continue.*/
