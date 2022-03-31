@@ -118,8 +118,8 @@ function mainMenu(person, people) {
  * @returns {Array}            An array containing the person-object (or empty array if no match)
  */
 function searchByName(people) {
-    let firstName = promptFor("What is the person's first name?", validator);
-    let lastName = promptFor("What is the person's last name?", validator);
+    let firstName = capitalizeFirstLetter(promptFor("What is the person's first name?", validator));
+    let lastName = capitalizeFirstLetter(promptFor("What is the person's last name?", validator));
 
     // The foundPerson value will be of type Array. Recall that .filter() ALWAYS returns an array.
     let foundPerson = people.filter(function (person) {
@@ -309,3 +309,7 @@ function findPersonInfo(person){
     let result = person.map(obj => `First Name: ${obj.firstName}\nLast Name: ${obj.lastName}\nGender: ${obj.gender}\nDOB: ${obj.dob}\nHeight: ${obj.height}\nWeight: ${obj.weight}\nEye Color: ${obj.eyeColor}\nOccupation: ${obj.occupation}`)
     return result
 };
+
+function capitalizeFirstLetter(name) {
+    return name.charAt(0).toUpperCase() + name.slice(1);
+  }
