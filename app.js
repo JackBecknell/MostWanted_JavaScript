@@ -93,7 +93,10 @@ function mainMenu(person, people) {
         case "descendants":
             //! TODO: Declare a findPersonDescendants function //////////////////////////////////////////
             // HINT: Review recursion lecture + demo for bonus user story
-            let personDescendants = findPersonDescendants(person[0], people);
+
+            //USING TEST FUNCTION BELOW !!!
+
+            let personDescendants = findDescendants(person[0], people);
             alert(personDescendants);
             break;
         case "restart":
@@ -288,7 +291,7 @@ function findAllSiblings(person, people){
 
 
 function findPersonDescendants(person, people, array = []){
-    let descendantArray = person.parents;
+    let parentArray = person.parents;
     array = [person]
     //let descendants = people.filter(everyone => (everyone.parents.includes(person.parents))
     
@@ -313,3 +316,27 @@ function findPersonInfo(person){
 function capitalizeFirstLetter(name) {
     return name.charAt(0).toUpperCase() + name.slice(1);
   }
+
+//TEST ZONE
+function findDescendants(person, people){
+    let returnValue = []
+    let descendantObj;
+    let personPk = person.id;
+    returnValue = returnValue.concat(people.filter(obj => (obj.parents.includes(personPk))).map(obj => `${obj.firstName} ${obj.lastName}`));
+    let children = (people.filter(obj => (obj.parents.includes(personPk))).map(obj => `${obj.firstName} ${obj.lastName}`));
+    if (children.length  === 0) {
+        return returnValue
+    }
+    for (let i = 0; i < children.length; i++){
+        descendantObj = people.filter(obj => (obj.parents.includes(personPk)));
+            returnValue = returnValue.concat(findDescendants(descendantObj[i], people))
+    }
+    return returnValue;
+}
+
+  /*We take person obj
+  From obj we take pk
+  From pk we search through all other person objects to see if their parents trait include that as fk
+  If it does store that name in array
+  Then use their pk to search through all other objects to see if their parents include that as fk
+  If it does, push that name to previous array and continue.*/
