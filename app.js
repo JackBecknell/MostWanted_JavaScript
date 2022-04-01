@@ -269,7 +269,7 @@ function validateByName(people, relationship, relationsFirstLastName) {
 // Any additional functions can be written below this line 👇. Happy Coding! 😁
 
 function searchByTrait(people) {
-    let traitCheckList = ["gender", "dob", "height", "weight", "eyecolor", "eye color", "eyes color", "occuption", "parent", "parents", "currentspouse", "current spouse", "spouse"]
+    let traitCheckList = ["gender", "dob", "height", "weight", "eyecolor", "eye color", "eyes color", "occupation", "parent", "parents", "currentspouse", "current spouse", "spouse"]
     let trait = promptFor("What is the type of trait you want to search by?\nTraits:\nGender, DOB, Height, Weight, Eyecolor, Occuption, Parents, Current Spouse : ", checkListValidator, people, traitCheckList).toLocaleLowerCase()
     let filteredTrait;
     switch (trait) {
@@ -297,10 +297,10 @@ function searchByTrait(people) {
             let eyecolor =  promptFor("What is their eye color?: ", checkListValidator, people, eyeColorCheckList)
             filteredTrait = filterByTrait(people, "eyeColor", eyecolor);
             break;
-        case "occuption":
+        case "occupation":
             let occupationCheckList = ["doctor", "assistant", "politician", "nurse", "landscaper", "programmer", "architect", "student",]
             let occupation =  promptFor("What is their occupation?: ", checkListValidator, people, occupationCheckList)
-            filteredTrait = filterByTrait(people, "occupation");
+            filteredTrait = filterByTrait(people, "occupation", occupation);
             break;
         case "parents":
         case "parent":
@@ -468,10 +468,10 @@ function validateByName(people, relationship, relationsFirstLastName) {
             if ([relationship] === "parents"){     
                 returnValue = people.filter(person => (person[relationship][0] === familyMember[0].id || person[relationship][1] === familyMember[0].id));
             }else{
-                returnValue = people.filter(person => (person[relationship] === familyMember[0].id));
-            }  if(returnValue == undefined || returnValue.length === 0){
+                returnValue = people.filter(person => (person[relationship] === familyMember[0][id]));
+            
+            } 
             return returnValue
-            }
         }else{
             alert('Check input spelling for Last Name.')
             return false 
