@@ -15,7 +15,7 @@
  * our user to decide whether to search by name or by traits.
  * @param {Array} people        A collection of person objects.
  */
-function app(people) {
+ function app(people) {
     // promptFor() is a custom function defined below that helps us prompt and validate input more easily
     // Note that we are chaining the .toLowerCase() immediately after the promptFor returns its value
     let searchType = promptFor(
@@ -31,13 +31,12 @@ function app(people) {
         case "no":
             //! TODO: Declare a searchByTrait function //////////////////////////////////////////
             searchResults = searchByTrait(people);
-            let data = searchResults 
-            let userInput = promptFor(`Found ${foundUsers}\n\n\nDo you want to pick another trait? [Yes/No]: `, yesNo)
-            foundUsers = searchResults.map(person => `${person.firstName} ${person.lastName}`)
+            let foundUsers = searchResults.map(person => `${person.firstName} ${person.lastName}`).join("\n")
+            let userInput = promptFor(`Found the following:\n${foundUsers}\n\nDo you want to pick another trait? [Yes/No]: `, people, yesNo)
             while(userInput === "yes"){
-                foundUsers = searchResults.map(person => `${person.firstName} ${person.lastName}`)
+                foundUsers = searchResults.map(person => `${person.firstName} ${person.lastName}`).join("\n")
                 searchResults = searchByTrait(searchResults);
-                userInput = promptFor(`Found ${foundUsers}\n\n\nDo you want to pick another trait? [Yes/No]: `, yesNo)
+                userInput = promptFor(`Found the following:\n${foundUsers}\n\nDo you want to pick another trait? [Yes/No]: `, people, yesNo)
             }
             break;
         default:
@@ -70,7 +69,7 @@ function mainMenu(person, people) {
         return app(people);
     }else if(person.length === 1){
         displayOption = promptFor(
-            `Found ${person[0].firstName} ${person[0].lastName}. Do you want to know their 'info', 'family', or 'descendants'?\nType the option you want or type 'restart' or 'quit'.`, validator, mainMenuCheckList
+            `Found ${person[0].firstName} ${person[0].lastName}. Do you want to know their 'info', 'family', or 'descendants'?\nType the option you want or type 'restart' or 'quit'.`, people, checkListValidator, mainMenuCheckList
         );
     }else{
         let displayOptionCheckList = ["restart", "quit"]
@@ -78,7 +77,7 @@ function mainMenu(person, people) {
         alert('The following people matched your trait specifications.')
         displayNamesArray = person.map (obj => `${obj.firstName} ${obj.lastName}.\n`)
 
-        displayOption = promptFor(`${displayNamesArray}\nWould you like to 'restart' or 'quit'.`, validator, displayOptionCheckList)
+        displayOption = promptFor(`${displayNamesArray}\nWould you like to 'restart' or 'quit'.`, checkListValidator, people, displayOptionCheckList)
     }
     
     // Routes our application based on the user's input
@@ -123,8 +122,8 @@ function mainMenu(person, people) {
  * @returns {Array}            An array containing the person-object (or empty array if no match)
  */
 function searchByName(people) {
-    let firstName = capitalizeFirstLetter(promptFor("What is the person's first name?", validator));
-    let lastName = capitalizeFirstLetter(promptFor("What is the person's last name?", validator));
+    let firstName = capitalizeFirstLetter(promptFor("What is the person's first name?", validator, people));
+    let lastName = capitalizeFirstLetter(promptFor("What is the person's last name?", validator, people));
 
     // The foundPerson value will be of type Array. Recall that .filter() ALWAYS returns an array.
     let foundPerson = people.filter(function (person) {
@@ -148,14 +147,8 @@ function searchByName(people) {
  * to the user in the form of an alert().
  * @param {Array} people        A collection of person objects.
  */
-function displayPeople(people) {
-    alert(
-        people
-            .map(function (person) {
-                return `${person.firstName} ${person.lastName}`;
-            })
-            .join("\n")
-    );
+ function displayPeople(people) {
+    alert(people.map(person => `${person.firstName} ${person.lastName}`).join("\n"));
 }
 // End of displayPeople()
 
@@ -180,10 +173,10 @@ function displayPerson(person) {
  * @param {Function} valid      A callback function used to validate basic user input.
  * @returns {String}            The valid string input retrieved from the user.
  */
-function promptFor(question, valid, checkList) {
+function promptFor(question, valid, people, checkList = [], trait) {
     do {
         var response = prompt(question).trim();
-    } while (!response || !valid(response, checkList) == true);
+    } while (!response || !valid(response, people, checkList, trait) == true);
     return response;
 }
 // End of promptFor()
@@ -200,13 +193,13 @@ function yesNo(input) {
 
 /**
  * This helper function checks to see if the value passed into input is
- * ('info', 'family', 'descendants', 'restart', 'quit') if not user
+ * included in the paramater checkList. if not user
  * gets an alert telling them their input was not accepted.
- * @param {*} input 
- * @param {*} trait 
- * @returns 
+ * @param {string} input    This comes from promptFor function
+ * @param {Array} objects    This comes from Data.js 
+ * @returns {boolean}       True if value found, false if not
  */
-function validator(input, checkList) {
+function checkListValidator(input, people, checkList) {
     let userInput = input.toLowerCase()
     if (checkList.includes(userInput)) {
         return true
@@ -215,51 +208,116 @@ function validator(input, checkList) {
         return false
     }
 }
+// End of checkListValidator()
 
-function validateTraits(input) {
-    
+/**
+ * This helper function checks user input against all of the people
+ * For the specific trait being passed into it. If it's not
+ * found user gets an alert telling them their input was not accepted.
+ * @param {string} input    This comes from promptFor function
+ * @param {Array} people    This comes from Data.js
+ * @param {Array} nothing   Imagine it doesn't exist :D   
+ * @returns {boolean}       True if value found, false if not
+ */
+function validateTrait(input, people, pointlessList, trait) {     
+    let peopleTrait = people.map(person => person[trait])
+    if (peopleTrait.includes(input)) {
+        return true
+    }else{
+        return false
+    }
 }
-// End of validator()
+//End of validateTrait()
+
+/**
+ * This helper function acts as a validator and a prompt inspector 
+ * for using parent name or spouse name as to find the person while
+ * searching by trait.
+ * @param {Array} people    This comes from Data.js 
+ * @param {String} relationship     Used for finding return value by trait. 
+ * @param {Array} relationsFirstLastName    Holds first and last name from family member(spouse/parent) 
+ * @returns     False(if name isn't valid) or a person object. 
+ */
+function validateByName(people, relationship, relationsFirstLastName) {
+    let returnValue;
+    let peoplesFirst = people.map(person => person.firstName);
+    let peoplesLast = people.map(person => person.lastName)
+    if (peoplesFirst.includes(relationsFirstLastName[0])) {
+        if (peoplesLast.includes(relationsFirstLastName[1])) {
+            let returnValue
+            let familyMember = people.filter(person => (person.firstName === relationsFirstLastName[0] && person.lastName === relationsFirstLastName[1]))
+            if ([relationship] === "parents"){     
+                returnValue = people.filter(person => (person[relationship][0] === familyMember[0].id || person[relationship][1] === familyMember[0].id));
+            }else{
+                returnValue = people.filter(person => (person[relationship] === familyMember[0].id));
+            }
+            return returnValue
+        }else{
+            alert('Check input spelling for Last Name.')
+            return false 
+        }
+    }else{
+        alert('Check input spelling for First Name.')
+        return false
+    }
+         
+}
+//End of validateByName()
 
 //////////////////////////////////////////* End Of Starter Code *//////////////////////////////////////////
 // Any additional functions can be written below this line 👇. Happy Coding! 😁
 
 function searchByTrait(people) {
-    let traitCheckList = ["gender", "dob", "height", "weight", "eyecolor", "eye color", "occuption", "parent", "parents", "currentspouse", "current spouse"]
-    let trait = promptFor("What is the type of trait you want to search by?\nTraits:\nGender, DOB, Height, Weight, Eyecolor, Occuption, Parents, Current Spouse : ", validator, traitCheckList).toLocaleLowerCase()
-   let filteredTrait;
+    let traitCheckList = ["gender", "dob", "height", "weight", "eyecolor", "eye color", "occuption", "parent", "parents", "currentspouse", "current spouse", "spouse"]
+    let trait = promptFor("What is the type of trait you want to search by?\nTraits:\nGender, DOB, Height, Weight, Eyecolor, Occuption, Parents, Current Spouse : ", checkListValidator, people, traitCheckList).toLocaleLowerCase()
+    let filteredTrait;
     switch (trait) {
         case "gender":
-            let gender = prompt("What is their gender?: ")
+            let genderCheckList = ['male', 'female']
+            let gender = promptFor("What is their gender?: ", checkListValidator, people, genderCheckList)
             filteredTrait = filterByTrait(people, "gender", gender);
             break;
         case "dob":
-            let dob = prompt("What is their date of birth?: [M/DD/YYYY]")
+            let dob = promptFor("What is their date of birth?: [M/DD/YYYY]", validateTrait, people, ['nothing'], 'dob')
             filteredTrait = filterByTrait(people, "dob", dob);  
             break;             
         case "height":
-            let height =  parseInt(prompt("What is their height?: "))
+            let height =  promptFor("What is their height?: ", validateTrait, people, ['nothing'], 'height')
             filteredTrait = filterByTrait(people, "height", height);
             break;
         case "weight":
-            let weight =  parseInt(prompt("What is their weight?: "))
+            let weight =  promptFor("What is their weight?: ", validateTrait, people, ['nothing'], 'weight')
             filteredTrait = filterByTrait(people, "weight", weight);
             break;
         case "eyecolor" || "eye color":
-            let eyecolor =  prompt("What is their eye color?: ")
+            let eyeColorCheckList = ["brown", "black", "hazel", "blue", "green"]
+            let eyecolor =  promptFor("What is their eye color?: ", checkListValidator, people, eyeColorCheckList)
             filteredTrait = filterByTrait(people, "eyeColor", eyecolor);
             break;
         case "occuption":
-            let occupation =  prompt("What is their occupation?: ")
+            let occupationCheckList = ["doctor", "assistant", "politician", "nurse", "landscaper", "programmer", "architect", "student",]
+            let occupation =  promptFor("What is their occupation?: ", checkListValidator, people, occupationCheckList)
             filteredTrait = filterByTrait(people, "occupation");
             break;
         case "parents":
-            let parents =  prompt("who are their parents: ")
-            filteredTrait = filterByTrait(people, "parents");
+            let children;
+            while (children === undefined || children === false) {
+                let parentName = []
+                parentName.push(capitalizeFirstLetter(prompt("What is the Parent's First Name?: ").toLowerCase()));
+                parentName.push(capitalizeFirstLetter(prompt("What is the Parent's Last Name?: ").toLowerCase()));
+                children = validateByName(people, 'parents', parentName)
+            }
+            filteredTrait = children;
             break;
         case "spouse" || "current spouse":
-            let spouse = prompt("Who is their spouse?: ")
-            filteredTrait = filterByTrait(people, "currentSpouse");
+            let spouse;
+            while (spouse === undefined || spouse === false) {
+                let spouseName = []
+                spouseName.push(capitalizeFirstLetter(prompt("What is the Spouse's First Name?: ").toLowerCase()));
+                spouseName.push(capitalizeFirstLetter(prompt("What is the Spouse's Last Name?: ").toLowerCase()));
+                spouse = validateByName(people, 'currentSpouse', spouseName)
+            }
+            filteredTrait = spouse;
             break;
     }
     return filteredTrait;   
@@ -279,7 +337,6 @@ function findPersonFamily(person, people){
     return `${person[0].firstName} ${person[0].lastName} Family:\n\nParent:\n${personParents}\n\nSpouse:\n${personSpouse}\n\nSiblings:\n${personSiblings}`
 }
 
-//changed this function!!!
 function findPersonNameFromPk(person, people, trait){
     if(trait === "currentSpouse" && person[0][trait] === null){
         return `No spouse in system.`
@@ -311,7 +368,6 @@ function findPersonInfo(person){
     return result
 };
 
-
 function capitalizeFirstLetter(name) {
     return name.charAt(0).toUpperCase() + name.slice(1);
   }
@@ -339,3 +395,76 @@ function findDescendants(person, people){
     return returnValue;
 }
 //End of findDescendants()
+
+/**
+ * This helper function checks to see if the value passed into input is
+ * included in the paramater checkList. if not user
+ * gets an alert telling them their input was not accepted.
+ * @param {string} input    This comes from promptFor function
+ * @param {Array} objects    This comes from Data.js 
+ * @returns {boolean}       True if value found, false if not
+ */
+ function checkListValidator(input, people, checkList) {
+    let userInput = input.toLowerCase()
+    if (checkList.includes(userInput)) {
+        return true
+    }else{
+        alert("Improper Input")
+        return false
+    }
+}
+// End of checkListValidator()
+
+/**
+ * This helper function checks user input against all of the people
+ * For the specific trait being passed into it. If it's not
+ * found user gets an alert telling them their input was not accepted.
+ * @param {string} input    This comes from promptFor function
+ * @param {Array} people    This comes from Data.js
+ * @param {Array} nothing   Imagine it doesn't exist :D   
+ * @returns {boolean}       True if value found, false if not
+ */
+function validateTrait(input, people, pointlessList, trait) {     
+    let peopleTrait = people.map(person => person[trait])
+    if (peopleTrait.includes(input)) {
+        return true
+    }else{
+        return false
+    }
+}
+//End of validateTrait()
+
+/**
+ * This helper function acts as a validator and a prompt inspector 
+ * for using parent name or spouse name as to find the person while
+ * searching by trait.
+ * @param {Array} people    This comes from Data.js 
+ * @param {String} relationship     Used for finding return value by trait. 
+ * @param {Array} relationsFirstLastName    Holds first and last name from family member(spouse/parent) 
+ * @returns     False(if name isn't valid) or a person object. 
+ */
+function validateByName(people, relationship, relationsFirstLastName) {
+    let returnValue;
+    let peoplesFirst = people.map(person => person.firstName);
+    let peoplesLast = people.map(person => person.lastName)
+    if (peoplesFirst.includes(relationsFirstLastName[0])) {
+        if (peoplesLast.includes(relationsFirstLastName[1])) {
+            let returnValue
+            let familyMember = people.filter(person => (person.firstName === relationsFirstLastName[0] && person.lastName === relationsFirstLastName[1]))
+            if ([relationship] === "parents"){     
+                returnValue = people.filter(person => (person[relationship][0] === familyMember[0].id || person[relationship][1] === familyMember[0].id));
+            }else{
+                returnValue = people.filter(person => (person[relationship] === familyMember[0].id));
+            }
+            return returnValue
+        }else{
+            alert('Check input spelling for Last Name.')
+            return false 
+        }
+    }else{
+        alert('Check input spelling for First Name.')
+        return false
+    }
+         
+}
+//End of validateByName()
