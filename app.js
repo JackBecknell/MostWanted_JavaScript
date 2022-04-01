@@ -32,11 +32,11 @@
             //! TODO: Declare a searchByTrait function //////////////////////////////////////////
             searchResults = searchByTrait(people);
             let foundUsers = searchResults.map(person => `${person.firstName} ${person.lastName}`).join("\n")
-            let userInput = promptFor(`Found the following:\n${foundUsers}\n\nDo you want to pick another trait? [Yes/No]: `, people, yesNo)
+            let userInput = promptFor(`Found the following:\n${foundUsers}\n\nDo you want to pick another trait? [Yes/No]: `, yesNo, people)
             while(userInput === "yes"){
-                foundUsers = searchResults.map(person => `${person.firstName} ${person.lastName}`).join("\n")
                 searchResults = searchByTrait(searchResults);
-                userInput = promptFor(`Found the following:\n${foundUsers}\n\nDo you want to pick another trait? [Yes/No]: `, people, yesNo)
+                foundUsers = searchResults.map(person => `${person.firstName} ${person.lastName}`).join("\n")
+                userInput = promptFor(`Found the following:\n${foundUsers}\n\nDo you want to pick another trait? [Yes/No]: `, yesNo, people)
             }
             break;
         default:
@@ -69,13 +69,14 @@ function mainMenu(person, people) {
         return app(people);
     }else if(person.length === 1){
         displayOption = promptFor(
-            `Found ${person[0].firstName} ${person[0].lastName}. Do you want to know their 'info', 'family', or 'descendants'?\nType the option you want or type 'restart' or 'quit'.`, people, checkListValidator, mainMenuCheckList
+            `Do you want to know ${person[0].firstName} ${person[0].lastName}'s 'info', 'family', or 'descendants'?\nType the option you want or type 'restart' or 'quit'.`, checkListValidator, people, mainMenuCheckList
         );
     }else{
         let displayOptionCheckList = ["restart", "quit"]
         let displayNamesArray = []
-        alert('The following people matched your trait specifications.')
-        displayNamesArray = person.map (obj => `${obj.firstName} ${obj.lastName}.\n`)
+        displayNamesArray = person.map (obj => `${obj.firstName} ${obj.lastName}.`).join("\n");
+        alert(`The following people matched your trait specifications.\n${displayNamesArray}`);
+        
 
         displayOption = promptFor(`${displayNamesArray}\nWould you like to 'restart' or 'quit'.`, checkListValidator, people, displayOptionCheckList)
     }
@@ -199,7 +200,7 @@ function yesNo(input) {
  * @param {Array} objects    This comes from Data.js 
  * @returns {boolean}       True if value found, false if not
  */
-function checkListValidator(input, people, checkList) {
+function checkListValidator(input, checkList, people) {
     let userInput = input.toLowerCase()
     if (checkList.includes(userInput)) {
         return true
@@ -268,7 +269,7 @@ function validateByName(people, relationship, relationsFirstLastName) {
 // Any additional functions can be written below this line 👇. Happy Coding! 😁
 
 function searchByTrait(people) {
-    let traitCheckList = ["gender", "dob", "height", "weight", "eyecolor", "eye color", "occuption", "parent", "parents", "currentspouse", "current spouse", "spouse"]
+    let traitCheckList = ["gender", "dob", "height", "weight", "eyecolor", "eye color", "eyes color", "occuption", "parent", "parents", "currentspouse", "current spouse", "spouse"]
     let trait = promptFor("What is the type of trait you want to search by?\nTraits:\nGender, DOB, Height, Weight, Eyecolor, Occuption, Parents, Current Spouse : ", checkListValidator, people, traitCheckList).toLocaleLowerCase()
     let filteredTrait;
     switch (trait) {
@@ -282,14 +283,16 @@ function searchByTrait(people) {
             filteredTrait = filterByTrait(people, "dob", dob);  
             break;             
         case "height":
-            let height =  promptFor("What is their height?: ", validateTrait, people, ['nothing'], 'height')
+            let height =  parseInt(promptFor("What is their height?: ", validateTrait, people, ['nothing'], 'height'))
             filteredTrait = filterByTrait(people, "height", height);
             break;
         case "weight":
-            let weight =  promptFor("What is their weight?: ", validateTrait, people, ['nothing'], 'weight')
+            let weight =  parseInt(promptFor("What is their weight?: ", validateTrait, people, ['nothing'], 'weight'))
             filteredTrait = filterByTrait(people, "weight", weight);
             break;
-        case "eyecolor" || "eye color":
+        case "eyecolor":
+        case "eye color":
+        case "eyes color":
             let eyeColorCheckList = ["brown", "black", "hazel", "blue", "green"]
             let eyecolor =  promptFor("What is their eye color?: ", checkListValidator, people, eyeColorCheckList)
             filteredTrait = filterByTrait(people, "eyeColor", eyecolor);
@@ -300,6 +303,7 @@ function searchByTrait(people) {
             filteredTrait = filterByTrait(people, "occupation");
             break;
         case "parents":
+        case "parent":
             let children;
             while (children === undefined || children === false) {
                 let parentName = []
@@ -309,7 +313,8 @@ function searchByTrait(people) {
             }
             filteredTrait = children;
             break;
-        case "spouse" || "current spouse":
+        case "spouse":
+        case "current spouse":
             let spouse;
             while (spouse === undefined || spouse === false) {
                 let spouseName = []
@@ -320,6 +325,7 @@ function searchByTrait(people) {
             filteredTrait = spouse;
             break;
     }
+   
     return filteredTrait;   
 }
 
@@ -426,10 +432,18 @@ function findDescendants(person, people){
  */
 function validateTrait(input, people, pointlessList, trait) {     
     let peopleTrait = people.map(person => person[trait])
-    if (peopleTrait.includes(input)) {
-        return true
+    if(trait == "dob"){
+        if (peopleTrait.includes(input)) {
+            return true
+        }else{
+            return false
+        }
     }else{
-        return false
+        if(peopleTrait.includes(parseInt(input))) {
+            return true
+        }else{
+            return false
+        }
     }
 }
 //End of validateTrait()
@@ -450,13 +464,14 @@ function validateByName(people, relationship, relationsFirstLastName) {
     if (peoplesFirst.includes(relationsFirstLastName[0])) {
         if (peoplesLast.includes(relationsFirstLastName[1])) {
             let returnValue
-            let familyMember = people.filter(person => (person.firstName === relationsFirstLastName[0] && person.lastName === relationsFirstLastName[1]))
+            let familyMember = people.filter(person => (person.firstName !== relationsFirstLastName[0] && person.lastName === relationsFirstLastName[1]))
             if ([relationship] === "parents"){     
                 returnValue = people.filter(person => (person[relationship][0] === familyMember[0].id || person[relationship][1] === familyMember[0].id));
             }else{
                 returnValue = people.filter(person => (person[relationship] === familyMember[0].id));
-            }
+            }  if(returnValue == undefined || returnValue.length === 0){
             return returnValue
+            }
         }else{
             alert('Check input spelling for Last Name.')
             return false 
@@ -467,4 +482,7 @@ function validateByName(people, relationship, relationsFirstLastName) {
     }
          
 }
+
+
+
 //End of validateByName()
